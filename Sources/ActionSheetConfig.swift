@@ -16,6 +16,7 @@ public class ActionSheetConfig {
     // MARK: 属性
     /// 取消按钮title
     public var cancelButtonTitle: String?
+    public var cancelButtonFont:UIFont
     /// 标题颜色 默认0x888888
     public var titleColor: UIColor
     /// 按钮文字颜色
@@ -49,8 +50,10 @@ public class ActionSheetConfig {
         buttonColor = UIColor.black
         titleFont = UIFont.systemFont(ofSize: 14)
         buttonFont = UIFont.systemFont(ofSize: 17)
-        separatorColor = UIColor(hex6: 0xd9d9d9)
+        separatorColor = UIColor(hex6: 0xeaeaea)
         destructiveButtonColor = UIColor(hex6: 0xE44545)
+        
+        cancelButtonFont = UIFont.systemFont(ofSize: 14)
         
         buttonHeight = 50.0
         animationDuration = 0.3
@@ -63,4 +66,23 @@ public class ActionSheetConfig {
         isScrollEnabled = false
     }
     
+    public func reset(){
+        titleColor = UIColor(hex6: 0x888888)
+        buttonColor = UIColor.black
+        titleFont = UIFont.systemFont(ofSize: 14)
+        buttonFont = UIFont.systemFont(ofSize: 17)
+        separatorColor = UIColor(hex6: 0xeaeaea)
+        destructiveButtonColor = UIColor(hex6: 0xE44545)
+        
+        
+        buttonHeight = 50.0
+        animationDuration = 0.3
+        titleLinesNumber = 0
+        titleEdgeInsets = UIEdgeInsets(top: 15, left: 15, bottom: 15, right: 15)
+        
+        canTouchToDismiss = true
+        buttonHighlightdColor = UIColor(hex6: 0xf7f7f7)
+        
+        isScrollEnabled = false
+    }
 }

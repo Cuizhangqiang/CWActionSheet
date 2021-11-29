@@ -9,8 +9,8 @@
 
 import UIKit
 
-let isIphoneX = (UIScreen.main.bounds.size == CGSize(width: 375.0, height: 812.0))
-let kBottomHeight: CGFloat = isIphoneX ? 34 : 0
+let bottom:CGFloat = UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 0
+let kBottomHeight: CGFloat = bottom > 0 ? bottom-10 : 0
 
 /// 点击回调
 public typealias ActionSheetClickedHandler = ((ActionSheetView, Int) -> Void)
@@ -19,6 +19,7 @@ public class ActionSheetView: UIView {
     // MARK: 属性
     /// 标题
     public var title: String?
+    public var cancelButtonFont: UIFont
     /// 取消按钮title
     public var cancelButtonTitle: String?
     /// 标题颜色 默认UIColor.black
@@ -84,6 +85,7 @@ public class ActionSheetView: UIView {
         buttonColor = config.buttonColor
         titleFont = config.titleFont
         buttonFont = config.buttonFont
+        cancelButtonFont = config.cancelButtonFont
         
         separatorColor = config.separatorColor
         destructiveButtonColor = config.destructiveButtonColor
@@ -93,7 +95,7 @@ public class ActionSheetView: UIView {
         titleEdgeInsets = config.titleEdgeInsets
         
         buttonHighlightdColor = config.buttonHighlightdColor
-        canTouchToDismiss = config.canTouchToDismiss        
+        canTouchToDismiss = config.canTouchToDismiss
         
         isScrollEnabled = config.isScrollEnabled
 
@@ -109,7 +111,7 @@ public class ActionSheetView: UIView {
     ///   - cancelButtonTitle: 取消按钮标题
     ///   - otherButtonTitles: 其他按钮数组
     ///   - clickedHandler: 点击事件回调
-    public convenience init(title: String? = nil, 
+    public convenience init(title: String? = nil,
                             cancelButtonTitle: String? = nil,
                             otherButtonTitles: [String] = [],
                             clickedHandler: ActionSheetClickedHandler? = nil) {
@@ -152,17 +154,27 @@ public class ActionSheetView: UIView {
         
         // 分割线
         divisionView = UIView()
-        divisionView.backgroundColor = UIColor(hex6: 0xededee)
+        divisionView.backgroundColor = UIColor(hex6: 0xf8f8f8)
         containerView.addSubview(divisionView)
         
         // 取消按钮
         cancelButton = UIButton(type: .custom)
         cancelButton.addTarget(self, action: #selector(cancelButtonClicked), for: .touchUpInside)
+        cancelButton.titleLabel?.font = cancelButtonFont
+        cancelButton.setTitleColor(UIColor(hex6: 0x666666), for: .normal)
         containerView.addSubview(cancelButton)
         
         bottomView = UIView()
-        bottomView.backgroundColor = UIColor(hex6: 0xededee)
+        bottomView.backgroundColor = UIColor.white
         containerView.addSubview(bottomView)
+    }
+    
+    public func setCorner(_ cornerRadii:CGSize,_ roundingCorners:UIRectCorner){
+        let fieldPath = UIBezierPath.init(roundedRect: bounds, byRoundingCorners: roundingCorners, cornerRadii:cornerRadii )
+        let fieldLayer = CAShapeLayer()
+        fieldLayer.frame = bounds
+        fieldLayer.path = fieldPath.cgPath
+        containerView.layer.mask = fieldLayer
     }
     
     /// 计算
@@ -209,13 +221,13 @@ public class ActionSheetView: UIView {
         tableView.frame = CGRect(x: 0, y: titleLabel.frame.maxY+titleEdgeInsetsBottom,
                                  width: contentWidth, height: tableViewHeight)
         
-        // 
+        //
         let divisionViewHeight: CGFloat = (cancelButtonTitle != nil) ? 5.0 : 0.0
         divisionView.frame = CGRect(x: 0, y: tableView.frame.maxY,
                                      width: contentWidth, height: divisionViewHeight)
         
         cancelButton.titleLabel?.font = buttonFont
-        cancelButton.setTitleColor(buttonColor, for: .normal)
+        cancelButton.setTitleColor(UIColor(hex6: 0x666666), for: .normal)
         cancelButton.setBackgroundImage(UIImage(color: UIColor.white), for: .normal)
         cancelButton.setBackgroundImage(UIImage(color: buttonHighlightdColor), for: .highlighted)
         cancelButton.setTitle(cancelButtonTitle, for: .normal)
@@ -333,7 +345,7 @@ extension ActionSheetView {
     
     func hideWithButtonIndex(_ index: Int) {
         
-        UIView.animate(withDuration: animationDuration, delay: 0, options: .curveEaseOut, animations: { 
+        UIView.animate(withDuration: animationDuration, delay: 0, options: .curveEaseOut, animations: {
             
             let frame = self.containerView.frame
             self.containerView.frame = frame.offsetBy(dx: 0, dy: frame.height)
