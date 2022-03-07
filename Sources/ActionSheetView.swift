@@ -73,7 +73,7 @@ public class ActionSheetView: UIView {
     /// 默认配置
     private var config: ActionSheetConfig = ActionSheetConfig.default
     
-    private var bottomView: UIView!
+//    private var bottomView: UIView!
     
     private var showCellline: Bool = true
     
@@ -190,9 +190,9 @@ public class ActionSheetView: UIView {
         cancelButton.setTitleColor(UIColor(hex6: 0x666666), for: .normal)
         containerView.addSubview(cancelButton)
         
-        bottomView = UIView()
-        bottomView.backgroundColor = UIColor.white
-        containerView.addSubview(bottomView)
+//        bottomView = UIView()
+//        bottomView.backgroundColor = UIColor.white
+//        containerView.addSubview(bottomView)
     }
     
     public func setCorner(_ cornerRadii:CGSize,_ roundingCorners:UIRectCorner){
@@ -267,8 +267,8 @@ public class ActionSheetView: UIView {
         }
         
         // 添加背景
-        bottomView.frame = CGRect(x: 0, y: cancelButton.frame.maxY,
-                                  width: contentWidth, height: kBottomHeight)
+//        bottomView.frame = CGRect(x: 0, y: cancelButton.frame.maxY,
+//                                  width: contentWidth, height: kBottomHeight)
    
         containerView.frame = CGRect(x: 0, y: self.frame.height - cancelButton.frame.maxY-kBottomHeight,
                                      width: contentWidth, height: cancelButton.frame.maxY+kBottomHeight)
