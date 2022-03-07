@@ -63,7 +63,7 @@ public class ActionSheetView: UIView {
     /// 其他按钮tableView
     private var tableView: UITableView!
     /// 背景
-    private var backgroundView: UIView!
+    var backgroundView: UIView!
     /// 分割线
     private var divisionView: UIView!
     /// 取消按钮
