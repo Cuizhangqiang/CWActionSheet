@@ -44,6 +44,18 @@ public class ActionSheetConfig {
     /// 是否可以点击其他区域
     public var canTouchToDismiss: Bool
     
+    public var backgroundViewColor: UIColor
+    
+    public var divisionHeight: CGFloat
+    
+    public var showCellline: Bool
+    
+    public var divisionColor: UIColor
+    
+    public var divisionMargin: CGFloat
+    
+    public var popviewCorner: CGFloat
+    
     private init() {
         
         titleColor = UIColor(hex6: 0x888888)
@@ -63,7 +75,19 @@ public class ActionSheetConfig {
         canTouchToDismiss = true
         buttonHighlightdColor = UIColor(hex6: 0xf7f7f7)
         
+        backgroundViewColor = .white
+        
         isScrollEnabled = false
+        
+        divisionHeight = 5.0
+        
+        showCellline = true
+        
+        divisionColor =  UIColor(hex6: 0xf8f8f8)
+        
+        divisionMargin = 0
+        
+        popviewCorner = 12.0
     }
     
     public func reset(){
@@ -83,6 +107,19 @@ public class ActionSheetConfig {
         canTouchToDismiss = true
         buttonHighlightdColor = UIColor(hex6: 0xf7f7f7)
         
+        backgroundViewColor = .white
+        
         isScrollEnabled = false
+        
+        divisionHeight = 5.0
+        
+        showCellline = true
+        
+        divisionColor =  UIColor(hex6: 0xf8f8f8)
+        
+        divisionMargin = 0
+        
+        popviewCorner = 12.0
+
     }
 }

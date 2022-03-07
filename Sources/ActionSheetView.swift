@@ -22,6 +22,8 @@ public class ActionSheetView: UIView {
     public var cancelButtonFont: UIFont
     /// 取消按钮title
     public var cancelButtonTitle: String?
+    
+    public var backgroundViewColor: UIColor
     /// 标题颜色 默认UIColor.black
     public var titleColor: UIColor
     /// 按钮文字颜色
@@ -63,7 +65,7 @@ public class ActionSheetView: UIView {
     /// 其他按钮tableView
     private var tableView: UITableView!
     /// 背景
-    var backgroundView: UIView!
+    private var backgroundView: UIView!
     /// 分割线
     private var divisionView: UIView!
     /// 取消按钮
@@ -72,6 +74,16 @@ public class ActionSheetView: UIView {
     private var config: ActionSheetConfig = ActionSheetConfig.default
     
     private var bottomView: UIView!
+    
+    private var showCellline: Bool = true
+    
+    private var divisionHeight: CGFloat = 5.0
+    
+    private var divisionColor: UIColor
+    
+    private var divisionMargin: CGFloat
+    
+    private var popviewCorner: CGFloat
     
     private convenience init() {
         let frame = UIScreen.main.bounds
@@ -98,10 +110,23 @@ public class ActionSheetView: UIView {
         canTouchToDismiss = config.canTouchToDismiss
         
         isScrollEnabled = config.isScrollEnabled
+        
+        backgroundViewColor = config.backgroundViewColor
+        
+        showCellline = config.showCellline
+        
+        divisionHeight = config.divisionHeight
+        
+        divisionColor = config.divisionColor
+        
+        divisionMargin = config.divisionMargin
+
+        popviewCorner = config.popviewCorner
 
         super.init(frame: frame)
         setupUI()
         
+        setCorner(CGSize(width: popviewCorner, height: popviewCorner), UIRectCorner(rawValue: UIRectCorner.topRight.rawValue | UIRectCorner.topLeft.rawValue))        
     }
     
     /// 初始化方法
@@ -137,7 +162,7 @@ public class ActionSheetView: UIView {
         backgroundView.addGestureRecognizer(tapGesture)
         
         containerView = UIView()
-        containerView.backgroundColor = UIColor.white
+        containerView.backgroundColor = backgroundViewColor
         addSubview(containerView)
         
         titleLabel = UILabel()
@@ -149,12 +174,13 @@ public class ActionSheetView: UIView {
         tableView.delegate = self
         tableView.separatorStyle = .none
         tableView.dataSource = self
-        tableView.register(ActionSheetCell.self, forCellReuseIdentifier: "cell")
+        tableView.backgroundColor = .clear
+        tableView.register(ActionSheetCell.self, forCellReuseIdentifier: "ActionSheetCell")
         containerView.addSubview(tableView)
         
         // 分割线
         divisionView = UIView()
-        divisionView.backgroundColor = UIColor(hex6: 0xf8f8f8)
+        divisionView.backgroundColor = divisionColor
         containerView.addSubview(divisionView)
         
         // 取消按钮
@@ -222,13 +248,13 @@ public class ActionSheetView: UIView {
                                  width: contentWidth, height: tableViewHeight)
         
         //
-        let divisionViewHeight: CGFloat = (cancelButtonTitle != nil) ? 5.0 : 0.0
-        divisionView.frame = CGRect(x: 0, y: tableView.frame.maxY,
-                                     width: contentWidth, height: divisionViewHeight)
+        let divisionViewHeight: CGFloat = (cancelButtonTitle != nil) ? divisionHeight : 0.0
+        divisionView.frame = CGRect(x: divisionMargin, y: tableView.frame.maxY,
+                                     width: contentWidth - 2 * divisionMargin, height: divisionViewHeight)
         
         cancelButton.titleLabel?.font = buttonFont
         cancelButton.setTitleColor(UIColor(hex6: 0x666666), for: .normal)
-        cancelButton.setBackgroundImage(UIImage(color: UIColor.white), for: .normal)
+        cancelButton.setBackgroundImage(UIImage(color: UIColor.clear), for: .normal)
         cancelButton.setBackgroundImage(UIImage(color: buttonHighlightdColor), for: .highlighted)
         cancelButton.setTitle(cancelButtonTitle, for: .normal)
         
@@ -314,12 +340,12 @@ extension ActionSheetView: UITableViewDelegate, UITableViewDataSource {
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! ActionSheetCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ActionSheetCell", for: indexPath) as! ActionSheetCell
         cell.titleLabel.font = buttonFont
         cell.lineLayer.backgroundColor = separatorColor.cgColor
         cell.titleLabel.text = otherButtonTitles[indexPath.row]
-        cell.selectedBackgroundView?.backgroundColor = self.buttonHighlightdColor
-
+        cell.backgroundColor = .clear
+        cell.lineLayer.isHidden = !showCellline
         if indexPath.row == destructiveButtonIndex {
             cell.titleLabel.textColor = destructiveButtonColor
         } else {
