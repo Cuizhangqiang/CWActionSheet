@@ -85,6 +85,8 @@ public class ActionSheetView: UIView {
     
     private var popviewCorner: CGFloat
     
+    private var cancelButtonTitleColor: UIColor
+    
     private convenience init() {
         let frame = UIScreen.main.bounds
         self.init(frame: frame)
@@ -122,6 +124,8 @@ public class ActionSheetView: UIView {
         divisionMargin = config.divisionMargin
 
         popviewCorner = config.popviewCorner
+        
+        cancelButtonTitleColor = config.cancelButtonTitleColor
 
         super.init(frame: frame)
         setupUI()
@@ -187,7 +191,7 @@ public class ActionSheetView: UIView {
         cancelButton = UIButton(type: .custom)
         cancelButton.addTarget(self, action: #selector(cancelButtonClicked), for: .touchUpInside)
         cancelButton.titleLabel?.font = cancelButtonFont
-        cancelButton.setTitleColor(UIColor(hex6: 0x666666), for: .normal)
+        cancelButton.setTitleColor(cancelButtonTitleColor, for: .normal)
         containerView.addSubview(cancelButton)
         
 //        bottomView = UIView()
@@ -253,7 +257,7 @@ public class ActionSheetView: UIView {
                                      width: contentWidth - 2 * divisionMargin, height: divisionViewHeight)
         
         cancelButton.titleLabel?.font = buttonFont
-        cancelButton.setTitleColor(UIColor(hex6: 0x666666), for: .normal)
+        cancelButton.setTitleColor(cancelButtonTitleColor, for: .normal)
         cancelButton.setBackgroundImage(UIImage(color: UIColor.clear), for: .normal)
         cancelButton.setBackgroundImage(UIImage(color: buttonHighlightdColor), for: .highlighted)
         cancelButton.setTitle(cancelButtonTitle, for: .normal)

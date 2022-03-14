@@ -56,6 +56,8 @@ public class ActionSheetConfig {
     
     public var popviewCorner: CGFloat
     
+    public var cancelButtonTitleColor : UIColor
+    
     private init() {
         
         titleColor = UIColor(hex6: 0x888888)
@@ -88,6 +90,8 @@ public class ActionSheetConfig {
         divisionMargin = 0
         
         popviewCorner = 12.0
+        
+        cancelButtonTitleColor = UIColor(hex6: 0x666666)
     }
     
     public func reset(){
@@ -120,6 +124,8 @@ public class ActionSheetConfig {
         divisionMargin = 0
         
         popviewCorner = 12.0
+        
+        cancelButtonTitleColor = UIColor(hex6: 0x666666)
 
     }
 }
