@@ -24,6 +24,9 @@ public class ActionSheetView: UIView {
     public var cancelButtonTitle: String?
     
     public var backgroundViewColor: UIColor
+    
+    public var bigBgColor: UIColor
+
     /// 标题颜色 默认UIColor.black
     public var titleColor: UIColor
     /// 按钮文字颜色
@@ -115,6 +118,8 @@ public class ActionSheetView: UIView {
         
         backgroundViewColor = config.backgroundViewColor
         
+        bigBgColor = config.bigBgColor
+
         showCellline = config.showCellline
         
         divisionHeight = config.divisionHeight
@@ -158,7 +163,7 @@ public class ActionSheetView: UIView {
     func setupUI() {
         
         backgroundView = UIView(frame: self.bounds)
-        backgroundView.backgroundColor = UIColor(hex6: 0x808080)
+        backgroundView.backgroundColor = bigBgColor
         backgroundView.alpha = 0
         addSubview(backgroundView)
         

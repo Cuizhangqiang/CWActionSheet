@@ -46,6 +46,8 @@ public class ActionSheetConfig {
     
     public var backgroundViewColor: UIColor
     
+    public var bigBgColor: UIColor
+    
     public var divisionHeight: CGFloat
     
     public var showCellline: Bool
@@ -78,6 +80,8 @@ public class ActionSheetConfig {
         buttonHighlightdColor = UIColor(hex6: 0xf7f7f7)
         
         backgroundViewColor = .white
+        
+        bigBgColor = UIColor(hex6: 0x808080)
         
         isScrollEnabled = false
         
@@ -112,6 +116,8 @@ public class ActionSheetConfig {
         buttonHighlightdColor = UIColor(hex6: 0xf7f7f7)
         
         backgroundViewColor = .white
+        
+        bigBgColor = UIColor(hex6: 0x808080)
         
         isScrollEnabled = false
         
