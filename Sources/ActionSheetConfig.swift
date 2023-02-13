@@ -60,6 +60,13 @@ public class ActionSheetConfig {
     
     public var cancelButtonTitleColor : UIColor
     
+    public var cancelButtonBackColor: UIColor
+    public var sheetMargin: CGFloat
+    public var tableBackColor: UIColor
+    public var cancelButtonCorner: CGFloat
+    public var tableCorner: CGFloat
+    public var backgroundViewAlpha: Double
+    
     private init() {
         
         titleColor = UIColor(hex6: 0x888888)
@@ -96,6 +103,13 @@ public class ActionSheetConfig {
         popviewCorner = 12.0
         
         cancelButtonTitleColor = UIColor(hex6: 0x666666)
+        
+        cancelButtonBackColor = .white
+        sheetMargin = 0
+        tableBackColor = .white
+        tableCorner = 0
+        cancelButtonCorner = 0
+        backgroundViewAlpha = 0.3
     }
     
     public func reset(){
@@ -132,6 +146,12 @@ public class ActionSheetConfig {
         popviewCorner = 12.0
         
         cancelButtonTitleColor = UIColor(hex6: 0x666666)
-
+        
+        cancelButtonBackColor = .white
+        sheetMargin = 0
+        tableBackColor = .white
+        tableCorner = 0
+        cancelButtonCorner = 0
+        backgroundViewAlpha = 0.3
     }
 }

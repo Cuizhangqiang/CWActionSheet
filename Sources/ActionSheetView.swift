@@ -6,20 +6,26 @@
 //  Copyright © 2017年 cwwise. All rights reserved.
 //
 
-
 import UIKit
 
-let bottom:CGFloat = UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 0
-let kBottomHeight: CGFloat = bottom > 0 ? bottom-10 : 0
+let bottom: CGFloat = UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 0
+let kBottomHeight: CGFloat = bottom > 0 ? bottom - 10 : 0
 
 /// 点击回调
-public typealias ActionSheetClickedHandler = ((ActionSheetView, Int) -> Void)
+public typealias ActionSheetClickedHandler = (ActionSheetView, Int) -> Void
 
 public class ActionSheetView: UIView {
     // MARK: 属性
+
     /// 标题
     public var title: String?
     public var cancelButtonFont: UIFont
+    public var cancelButtonBackColor: UIColor
+    public var sheetMargin: CGFloat
+    public var tableBackColor: UIColor
+    public var cancelButtonCorner: CGFloat
+    public var tableCorner: CGFloat
+    public var backgroundViewAlpha: Double
     /// 取消按钮title
     public var cancelButtonTitle: String?
     
@@ -74,7 +80,7 @@ public class ActionSheetView: UIView {
     /// 取消按钮
     private var cancelButton: UIButton!
     /// 默认配置
-    private var config: ActionSheetConfig = ActionSheetConfig.default
+    private var config: ActionSheetConfig = .default
     
 //    private var bottomView: UIView!
     
@@ -95,8 +101,7 @@ public class ActionSheetView: UIView {
         self.init(frame: frame)
     }
     
-    private override init(frame: CGRect) {
-        
+    override private init(frame: CGRect) {
         cancelButtonTitle = config.cancelButtonTitle
         titleColor = config.titleColor
         buttonColor = config.buttonColor
@@ -131,11 +136,18 @@ public class ActionSheetView: UIView {
         popviewCorner = config.popviewCorner
         
         cancelButtonTitleColor = config.cancelButtonTitleColor
+        
+        cancelButtonBackColor = config.cancelButtonBackColor
+        sheetMargin = config.sheetMargin
+        tableBackColor = config.tableBackColor
+        cancelButtonCorner = config.cancelButtonCorner
+        tableCorner = config.tableCorner
+        backgroundViewAlpha = config.backgroundViewAlpha
 
         super.init(frame: frame)
         setupUI()
         
-        setCorner(CGSize(width: popviewCorner, height: popviewCorner), UIRectCorner(rawValue: UIRectCorner.topRight.rawValue | UIRectCorner.topLeft.rawValue))        
+        setCorner(CGSize(width: popviewCorner, height: popviewCorner), UIRectCorner(rawValue: UIRectCorner.topRight.rawValue | UIRectCorner.topLeft.rawValue))
     }
     
     /// 初始化方法
@@ -148,7 +160,8 @@ public class ActionSheetView: UIView {
     public convenience init(title: String? = nil,
                             cancelButtonTitle: String? = nil,
                             otherButtonTitles: [String] = [],
-                            clickedHandler: ActionSheetClickedHandler? = nil) {
+                            clickedHandler: ActionSheetClickedHandler? = nil)
+    {
         self.init()
         self.title = title
         self.otherButtonTitles = otherButtonTitles
@@ -156,13 +169,13 @@ public class ActionSheetView: UIView {
         self.clickedHandler = clickedHandler
     }
 
-    required public init?(coder aDecoder: NSCoder) {
+    @available(*, unavailable)
+    public required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     func setupUI() {
-        
-        backgroundView = UIView(frame: self.bounds)
+        backgroundView = UIView(frame: bounds)
         backgroundView.backgroundColor = bigBgColor
         backgroundView.alpha = 0
         addSubview(backgroundView)
@@ -183,7 +196,7 @@ public class ActionSheetView: UIView {
         tableView.delegate = self
         tableView.separatorStyle = .none
         tableView.dataSource = self
-        tableView.backgroundColor = .clear
+        tableView.backgroundColor = .white
         tableView.register(ActionSheetCell.self, forCellReuseIdentifier: "ActionSheetCell")
         containerView.addSubview(tableView)
         
@@ -197,15 +210,13 @@ public class ActionSheetView: UIView {
         cancelButton.addTarget(self, action: #selector(cancelButtonClicked), for: .touchUpInside)
         cancelButton.titleLabel?.font = cancelButtonFont
         cancelButton.setTitleColor(cancelButtonTitleColor, for: .normal)
+        cancelButton.backgroundColor = cancelButtonBackColor
         containerView.addSubview(cancelButton)
-        
-//        bottomView = UIView()
-//        bottomView.backgroundColor = UIColor.white
-//        containerView.addSubview(bottomView)
+
     }
     
-    public func setCorner(_ cornerRadii:CGSize,_ roundingCorners:UIRectCorner){
-        let fieldPath = UIBezierPath.init(roundedRect: bounds, byRoundingCorners: roundingCorners, cornerRadii:cornerRadii )
+    public func setCorner(_ cornerRadii: CGSize, _ roundingCorners: UIRectCorner) {
+        let fieldPath = UIBezierPath(roundedRect: bounds, byRoundingCorners: roundingCorners, cornerRadii: cornerRadii)
         let fieldLayer = CAShapeLayer()
         fieldLayer.frame = bounds
         fieldLayer.path = fieldPath.cgPath
@@ -214,7 +225,6 @@ public class ActionSheetView: UIView {
     
     /// 计算
     func setupSubViews() {
-        
         if isScrollEnabled == true {
             assert(visibleButtonCount > 0, "visibleButtonCount 不能小于0")
         }
@@ -226,7 +236,7 @@ public class ActionSheetView: UIView {
         
         tableView.rowHeight = buttonHeight
     
-        let contentWidth = self.frame.width
+        let contentWidth = frame.width - sheetMargin * 2
  
         var titleEdgeInsetsBottom = titleEdgeInsets.bottom
         if title != nil {
@@ -243,7 +253,6 @@ public class ActionSheetView: UIView {
             titleEdgeInsetsBottom = 0
         }
         
-    
         // layout tableView
         var tableViewHeight: CGFloat
         if isScrollEnabled && visibleButtonCount != 0 {
@@ -253,36 +262,36 @@ public class ActionSheetView: UIView {
         }
         
         tableView.isScrollEnabled = isScrollEnabled
-        tableView.frame = CGRect(x: 0, y: titleLabel.frame.maxY+titleEdgeInsetsBottom,
+        tableView.frame = CGRect(x: sheetMargin, y: titleLabel.frame.maxY+titleEdgeInsetsBottom,
                                  width: contentWidth, height: tableViewHeight)
+        tableView.layer.cornerRadius = tableCorner
+        tableView.layer.masksToBounds = true
         
-        //
         let divisionViewHeight: CGFloat = (cancelButtonTitle != nil) ? divisionHeight : 0.0
+
         divisionView.frame = CGRect(x: divisionMargin, y: tableView.frame.maxY,
-                                     width: contentWidth - 2 * divisionMargin, height: divisionViewHeight)
+                                    width: contentWidth - 2 * divisionMargin, height: divisionViewHeight)
         
         cancelButton.titleLabel?.font = buttonFont
         cancelButton.setTitleColor(cancelButtonTitleColor, for: .normal)
         cancelButton.setBackgroundImage(UIImage(color: UIColor.clear), for: .normal)
         cancelButton.setBackgroundImage(UIImage(color: buttonHighlightdColor), for: .highlighted)
         cancelButton.setTitle(cancelButtonTitle, for: .normal)
+        cancelButton.layer.cornerRadius = cancelButtonCorner
+        cancelButton.layer.masksToBounds = true
         
         if cancelButtonTitle != nil {
-            cancelButton.frame = CGRect(x: 0, y: divisionView.frame.maxY,
+            cancelButton.frame = CGRect(x: sheetMargin, y: divisionView.frame.maxY,
                                         width: contentWidth, height: buttonHeight)
         } else {
-            cancelButton.frame = CGRect(x: 0, y: divisionView.frame.maxY,
+            cancelButton.frame = CGRect(x: sheetMargin, y: divisionView.frame.maxY,
                                         width: contentWidth, height: 0)
         }
         
         // 添加背景
-//        bottomView.frame = CGRect(x: 0, y: cancelButton.frame.maxY,
-//                                  width: contentWidth, height: kBottomHeight)
-   
-        containerView.frame = CGRect(x: 0, y: self.frame.height - cancelButton.frame.maxY-kBottomHeight,
+        containerView.frame = CGRect(x: 0, y: frame.height - cancelButton.frame.maxY - kBottomHeight,
                                      width: contentWidth, height: cancelButton.frame.maxY+kBottomHeight)
     }
-    
     
     /// 添加按钮
     ///
@@ -311,23 +320,21 @@ public class ActionSheetView: UIView {
     
     /// 显示ActionSheetView
     public func show() {
-
         let keyWindow = UIApplication.shared.keyWindow!
         keyWindow.addSubview(self)
         
         setupSubViews()
         containerView.frame = containerView.frame.offsetBy(dx: 0, dy: containerView.frame.height)
         
-        UIView.animate(withDuration: animationDuration, delay: 0, options: .curveEaseOut, animations: {
-            
+        UIView.animate(withDuration: animationDuration, delay: 0, options: .curveEaseOut, animations: { [weak self] in
+            guard let self = self else { return }
             let frame = self.containerView.frame
             self.containerView.frame = frame.offsetBy(dx: 0, dy: -frame.height)
-            self.backgroundView.alpha = 0.3
+            self.backgroundView.alpha = self.backgroundViewAlpha
             
-        }, completion: {(finished) in
-            
+        }, completion: { [weak self] _ in
+            guard let self = self else { return }
             self.backgroundView.isUserInteractionEnabled = self.canTouchToDismiss
-            
         })
     }
     
@@ -339,11 +346,9 @@ public class ActionSheetView: UIView {
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
-
 }
 
 extension ActionSheetView: UITableViewDelegate, UITableViewDataSource {
-    
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return otherButtonTitles.count
     }
@@ -365,48 +370,42 @@ extension ActionSheetView: UITableViewDelegate, UITableViewDataSource {
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        self.clickedHandler?(self, indexPath.row+1)
+        clickedHandler?(self, indexPath.row+1)
         hideWithButtonIndex(indexPath.row+1)
     }
-    
 }
 
 extension ActionSheetView {
-    
     @objc func cancelButtonClicked() {
-        self.clickedHandler?(self, 0)
+        clickedHandler?(self, 0)
         hideWithButtonIndex(0)
     }
     
     func hideWithButtonIndex(_ index: Int) {
-        
-        UIView.animate(withDuration: animationDuration, delay: 0, options: .curveEaseOut, animations: {
-            
+        UIView.animate(withDuration: animationDuration, delay: 0, options: .curveEaseOut, animations: { [weak self] in
+            guard let self = self else { return }
             let frame = self.containerView.frame
             self.containerView.frame = frame.offsetBy(dx: 0, dy: frame.height)
-            self.backgroundView.alpha = 0.0
+            self.backgroundView.alpha = self.backgroundViewAlpha
             
-        }, completion: {(finished) in
-            
+        }, completion: { [weak self] _ in
+            guard let self = self else { return }
             self.removeFromSuperview()
-            
         })
     }
 }
 
-
 extension UIColor {
-     convenience init(hex6: UInt32, alpha: Float = 1) {
+    convenience init(hex6: UInt32, alpha: Float = 1) {
         let divisor = CGFloat(255)
-        let red     = CGFloat((hex6 & 0xFF0000) >> 16) / divisor
-        let green   = CGFloat((hex6 & 0x00FF00) >> 8) / divisor
-        let blue    = CGFloat((hex6 & 0x0000FF) >> 0) / divisor
+        let red = CGFloat((hex6 & 0xFF0000) >> 16) / divisor
+        let green = CGFloat((hex6 & 0x00FF00) >> 8) / divisor
+        let blue = CGFloat((hex6 & 0x0000FF) >> 0) / divisor
         self.init(red: red, green: green, blue: blue, alpha: CGFloat(alpha))
     }
 }
 
 extension UIImage {
-    
     convenience init?(color: UIColor, size: CGSize = CGSize(width: 10, height: 10)) {
         let rect = CGRect(x: 0, y: 0, width: size.width, height: size.height)
         UIGraphicsBeginImageContextWithOptions(rect.size, false, UIScreen.main.scale)
@@ -415,8 +414,7 @@ extension UIImage {
         context?.setFillColor(color.cgColor)
         context?.fill(rect)
         
-        self.init(cgImage:(UIGraphicsGetImageFromCurrentImageContext()?.cgImage!)!)
+        self.init(cgImage: (UIGraphicsGetImageFromCurrentImageContext()?.cgImage!)!)
         UIGraphicsEndImageContext()
     }
-
 }
