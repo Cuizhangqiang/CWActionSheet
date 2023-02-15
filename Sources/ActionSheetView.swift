@@ -9,7 +9,7 @@
 import UIKit
 
 let bottom: CGFloat = UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 0
-let kBottomHeight: CGFloat = bottom > 0 ? bottom - 10 : 0
+let kBottomHeight: CGFloat = bottom > 0 ? bottom - 10 : 10
 
 /// 点击回调
 public typealias ActionSheetClickedHandler = (ActionSheetView, Int) -> Void
@@ -351,6 +351,10 @@ public class ActionSheetView: UIView {
 extension ActionSheetView: UITableViewDelegate, UITableViewDataSource {
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return otherButtonTitles.count
+    }
+    
+    public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return buttonHeight
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
