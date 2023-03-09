@@ -66,6 +66,9 @@ public class ActionSheetConfig {
     public var cancelButtonCorner: CGFloat
     public var tableCorner: CGFloat
     public var backgroundViewAlpha: Double
+    /// 当前选中的index
+    public var currIndex: Int
+    public var currColor: UIColor
     
     private init() {
         
@@ -110,6 +113,9 @@ public class ActionSheetConfig {
         tableCorner = 0
         cancelButtonCorner = 0
         backgroundViewAlpha = 0.3
+        
+        currIndex = 0
+        currColor = buttonColor
     }
     
     public func reset(){
@@ -153,5 +159,8 @@ public class ActionSheetConfig {
         tableCorner = 0
         cancelButtonCorner = 0
         backgroundViewAlpha = 0.3
+        
+        currIndex = 0
+        currColor = buttonColor
     }
 }

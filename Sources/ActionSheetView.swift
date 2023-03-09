@@ -96,6 +96,11 @@ public class ActionSheetView: UIView {
     
     private var cancelButtonTitleColor: UIColor
     
+    /// 当前选中的index
+    public var currIndex: Int
+    public var currColor: UIColor
+    
+    
     private convenience init() {
         let frame = UIScreen.main.bounds
         self.init(frame: frame)
@@ -143,6 +148,9 @@ public class ActionSheetView: UIView {
         cancelButtonCorner = config.cancelButtonCorner
         tableCorner = config.tableCorner
         backgroundViewAlpha = config.backgroundViewAlpha
+        
+        currIndex = config.currIndex
+        currColor = config.currColor
 
         super.init(frame: frame)
         setupUI()
@@ -196,7 +204,7 @@ public class ActionSheetView: UIView {
         tableView.delegate = self
         tableView.separatorStyle = .none
         tableView.dataSource = self
-        tableView.backgroundColor = .white
+        tableView.backgroundColor = tableBackColor
         tableView.register(ActionSheetCell.self, forCellReuseIdentifier: "ActionSheetCell")
         containerView.addSubview(tableView)
         
@@ -262,7 +270,7 @@ public class ActionSheetView: UIView {
         }
         
         tableView.isScrollEnabled = isScrollEnabled
-        tableView.frame = CGRect(x: sheetMargin, y: titleLabel.frame.maxY+titleEdgeInsetsBottom,
+        tableView.frame = CGRect(x: 0, y: titleLabel.frame.maxY+titleEdgeInsetsBottom,
                                  width: contentWidth, height: tableViewHeight)
         tableView.layer.cornerRadius = tableCorner
         tableView.layer.masksToBounds = true
@@ -281,16 +289,16 @@ public class ActionSheetView: UIView {
         cancelButton.layer.masksToBounds = true
         
         if cancelButtonTitle != nil {
-            cancelButton.frame = CGRect(x: sheetMargin, y: divisionView.frame.maxY,
+            cancelButton.frame = CGRect(x: 0, y: divisionView.frame.maxY,
                                         width: contentWidth, height: buttonHeight)
         } else {
-            cancelButton.frame = CGRect(x: sheetMargin, y: divisionView.frame.maxY,
+            cancelButton.frame = CGRect(x: 0, y: divisionView.frame.maxY,
                                         width: contentWidth, height: 0)
         }
         
         // 添加背景
-        containerView.frame = CGRect(x: 0, y: frame.height - cancelButton.frame.maxY - kBottomHeight,
-                                     width: contentWidth, height: cancelButton.frame.maxY+kBottomHeight)
+        containerView.frame = CGRect(x: sheetMargin, y: frame.height - cancelButton.frame.maxY - kBottomHeight,
+                                     width: UIScreen.main.bounds.width - sheetMargin * 2, height: cancelButton.frame.maxY+kBottomHeight)
     }
     
     /// 添加按钮
@@ -364,9 +372,11 @@ extension ActionSheetView: UITableViewDelegate, UITableViewDataSource {
         cell.titleLabel.text = otherButtonTitles[indexPath.row]
         cell.backgroundColor = .clear
         cell.lineLayer.isHidden = !showCellline
-        if indexPath.row == destructiveButtonIndex {
+        if indexPath.row == currIndex {
+            cell.titleLabel.textColor = currColor
+        }else if indexPath.row == destructiveButtonIndex {
             cell.titleLabel.textColor = destructiveButtonColor
-        } else {
+        } else{
             cell.titleLabel.textColor = buttonColor
         }
         return cell
