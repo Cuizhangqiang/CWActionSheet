@@ -100,7 +100,6 @@ public class ActionSheetView: UIView {
     public var currIndex: Int
     public var currColor: UIColor
     
-    
     private convenience init() {
         let frame = UIScreen.main.bounds
         self.init(frame: frame)
@@ -220,7 +219,6 @@ public class ActionSheetView: UIView {
         cancelButton.setTitleColor(cancelButtonTitleColor, for: .normal)
         cancelButton.backgroundColor = cancelButtonBackColor
         containerView.addSubview(cancelButton)
-
     }
     
     public func setCorner(_ cornerRadii: CGSize, _ roundingCorners: UIRectCorner) {
@@ -269,9 +267,12 @@ public class ActionSheetView: UIView {
             tableViewHeight = CGFloat(otherButtonTitles.count) * buttonHeight
         }
         
-        tableView.isScrollEnabled = isScrollEnabled
+//        tableView.isScrollEnabled = isScrollEnabled
+//        tableView.frame = CGRect(x: 0, y: titleLabel.frame.maxY+titleEdgeInsetsBottom,
+//                                 width: contentWidth, height: tableViewHeight)
+        tableView.isScrollEnabled = tableViewHeight > (UIScreen.main.bounds.height - 196)
         tableView.frame = CGRect(x: 0, y: titleLabel.frame.maxY+titleEdgeInsetsBottom,
-                                 width: contentWidth, height: tableViewHeight)
+                                 width: contentWidth, height: min(tableViewHeight, UIScreen.main.bounds.height - 196))
         tableView.layer.cornerRadius = tableCorner
         tableView.layer.masksToBounds = true
         
@@ -374,9 +375,9 @@ extension ActionSheetView: UITableViewDelegate, UITableViewDataSource {
         cell.lineLayer.isHidden = !showCellline
         if indexPath.row == currIndex {
             cell.titleLabel.textColor = currColor
-        }else if indexPath.row == destructiveButtonIndex {
+        } else if indexPath.row == destructiveButtonIndex {
             cell.titleLabel.textColor = destructiveButtonColor
-        } else{
+        } else {
             cell.titleLabel.textColor = buttonColor
         }
         return cell
