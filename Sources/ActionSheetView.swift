@@ -327,9 +327,18 @@ public class ActionSheetView: UIView {
         cancelButtonClicked()
     }
     
+    /// 适配keyWindow
+    var ltKeyWindow: UIWindow? {
+        if #available(iOS 13.0, *) {
+            return UIApplication.shared.connectedScenes.filter { $0.activationState == .foregroundActive }.map { $0 as? UIWindowScene }.compactMap { $0 }.first?.windows.filter { $0.isKeyWindow }.first
+        } else {
+            return UIApplication.shared.keyWindow
+        }
+    }
+    
     /// 显示ActionSheetView
     public func show() {
-        let keyWindow = UIApplication.shared.keyWindow!
+        guard let keyWindow = ltKeyWindow else { return }
         keyWindow.addSubview(self)
         
         setupSubViews()
