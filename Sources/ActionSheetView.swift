@@ -410,8 +410,7 @@ extension ActionSheetView {
             guard let self = self else { return }
             let frame = self.containerView.frame
             self.containerView.frame = frame.offsetBy(dx: 0, dy: frame.height)
-            self.backgroundView.alpha = self.backgroundViewAlpha
-            
+            self.backgroundView.alpha = 0
         }, completion: { [weak self] _ in
             guard let self = self else { return }
             self.removeFromSuperview()
